@@ -1,0 +1,2 @@
+server.host: "0.0.0.0"
+opensearch.hosts: ["http://opensearch-a:9200", "http://opensearch-b:9200"]

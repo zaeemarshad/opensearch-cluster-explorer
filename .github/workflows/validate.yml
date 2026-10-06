@@ -1,0 +1,59 @@
+name: Validate Cluster Explorer
+on: [push, pull_request, workflow_dispatch]
+permissions:
+  contents: read
+jobs:
+  portable:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: "22", cache: npm }
+      - run: npm ci --ignore-scripts --legacy-peer-deps
+      - run: npm audit --audit-level=moderate
+      - run: npm test
+      - run: npm run typecheck:portable
+      - run: npm run check:bundles
+  dashboards-package:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: plugin }
+      - uses: actions/checkout@v4
+        with:
+          repository: opensearch-project/OpenSearch-Dashboards
+          ref: "3.9.0"
+          path: dashboards
+      - uses: actions/setup-node@v4
+        with: { node-version-file: dashboards/.node-version }
+      - run: npm install --global yarn@1.22.19
+      - name: Place plugin in host checkout
+        run: |
+          mkdir -p dashboards/plugins/cluster_explorer
+          tar -C plugin --exclude=.git --exclude=node_modules --exclude=target --exclude=build -cf - . | tar -C dashboards/plugins/cluster_explorer -xf -
+      - run: yarn osd bootstrap
+        working-directory: dashboards
+        env: { NODE_OPTIONS: "--max-old-space-size=6144" }
+      - run: yarn build --opensearch-dashboards-version 3.9.0
+        working-directory: dashboards/plugins/cluster_explorer
+        env: { NODE_OPTIONS: "--max-old-space-size=6144" }
+      - uses: actions/upload-artifact@v4
+        with:
+          name: clusterExplorer-3.9.0
+          path: dashboards/plugins/cluster_explorer/build/clusterExplorer-3.9.0.zip
+          if-no-files-found: error
+  security-acceptance:
+    needs: dashboards-package
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: clusterExplorer-3.9.0
+          path: build
+      - run: dev/security/lab.sh start
+      - run: python3 -u scripts/smoke-security.py
+      - if: always()
+        run: dev/security/lab.sh reset

@@ -1,0 +1,6 @@
+Cluster Explorer for OpenSearch Dashboards
+Licensed under the Apache License, Version 2.0.
+
+OpenSearch, OpenSearch Dashboards and OUI are projects of their respective contributors.
+They are external runtime/development dependencies and are not bundled in this source archive.
+This project is not an official OpenSearch distribution.

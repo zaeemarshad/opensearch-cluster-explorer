@@ -1,0 +1,21 @@
+name: Bug report
+description: Report a reproducible plugin problem
+body:
+  - type: input
+    id: versions
+    attributes:
+      label: Versions
+      description: Plugin, OpenSearch and OpenSearch Dashboards versions
+    validations: { required: true }
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Steps and expected behavior
+      description: Include index/shard scale and whether Security is enabled. Remove credentials and sensitive data.
+    validations: { required: true }
+  - type: textarea
+    id: observed
+    attributes:
+      label: Actual behavior
+      description: Sanitized error messages or screenshots
+    validations: { required: true }

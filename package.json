@@ -1,0 +1,46 @@
+{
+  "name": "cluster-explorer",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Read-only operational cluster explorer for OpenSearch Dashboards 3.9.0",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/zaeemarshad/opensearch-cluster-explorer.git"
+  },
+  "homepage": "https://github.com/zaeemarshad/opensearch-cluster-explorer",
+  "bugs": {
+    "url": "https://github.com/zaeemarshad/opensearch-cluster-explorer/issues"
+  },
+  "opensearchDashboards": {
+    "version": "3.9.0"
+  },
+  "scripts": {
+    "smoke:security": "python3 scripts/smoke-security.py",
+    "smoke:ui-regressions": "node scripts/smoke-ui-regressions.mjs",
+    "smoke:api": "python3 scripts/smoke-dashboards.py",
+    "smoke:browser": "node scripts/smoke-browser.mjs",
+    "build": "node ../../scripts/plugin_helpers build",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "typecheck:portable": "tsc -p tsconfig.portable.json --noEmit",
+    "typecheck:host": "tsc -p tsconfig.json --noEmit",
+    "check:bundles": "node scripts/check-bundles.mjs"
+  },
+  "overrides": {
+    "prismjs": "1.30.0",
+    "trim": "0.0.3"
+  },
+  "devDependencies": {
+    "@elastic/eui": "npm:@opensearch-project/oui@1.24.2",
+    "@types/node": "~22.19.0",
+    "@types/react": "^18.2.0",
+    "@types/react-dom": "^18.2.0",
+    "esbuild": "0.25.12",
+    "playwright": "^1.56.1",
+    "prettier": "^3.5.3",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "tsx": "4.20.6",
+    "typescript": "~6.0.2"
+  }
+}

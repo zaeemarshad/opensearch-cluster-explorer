@@ -1,0 +1,330 @@
+/* SPDX-License-Identifier: Apache-2.0 */
+// The host owns the OUI theme; do not import a second global theme or app chrome.
+.ceApp {
+  padding: 24px;
+  max-width: 2200px;
+  margin: auto;
+}
+.ceApp .ceHeading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+.ceSub {
+  margin: 12px 0 20px;
+  overflow-wrap: anywhere;
+}
+.ceMuted,
+.ceFine {
+  opacity: 0.75;
+}
+.ceVisuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+.ceFine {
+  font-size: 12px;
+  line-height: 1.6;
+  margin: 14px 0;
+}
+.ceControls {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.ceControls .euiFormControlLayout {
+  max-width: 170px;
+}
+.ceScope {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.ceScope input {
+  max-width: 280px;
+}
+.ceApp .euiCallOut {
+  margin: 16px 0;
+}
+.ceSummary {
+  margin: 22px 0;
+}
+.ceWorkspace {
+  margin-top: 16px;
+  overflow: hidden;
+}
+.ceFilters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 16px;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+.ceFilters .euiFormControlLayout {
+  max-width: 260px;
+}
+.ceSecondary {
+  padding: 12px 16px;
+}
+.ceTableScroll {
+  overflow: auto;
+}
+.ceMatrix,
+.ceTable {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+.ceMatrix {
+  min-width: 900px;
+  table-layout: fixed;
+}
+.ceMatrix th,
+.ceMatrix td,
+.ceTable th,
+.ceTable td {
+  padding: 15px;
+  text-align: left;
+  vertical-align: middle;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+.ceMatrix th,
+.ceMatrix td {
+  border-right: 1px solid rgba(128, 128, 128, 0.2);
+}
+.ceMatrix thead th,
+.ceTable thead th {
+  background: rgba(128, 128, 128, 0.06);
+  font-weight: 600;
+}
+.ceMatrix th:first-child {
+  width: 240px;
+}
+.ceMatrix small {
+  display: block;
+  font-size: 12px;
+  line-height: 1.5;
+  opacity: 0.75;
+  margin: 9px 0;
+  font-weight: 400;
+}
+.ceLink {
+  color: #0073a8;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  padding: 0;
+  overflow-wrap: anywhere;
+}
+.ceLink:hover {
+  text-decoration: underline;
+}
+.ceBar {
+  height: 4px;
+  background: rgba(128, 128, 128, 0.2);
+  border-radius: 3px;
+}
+.ceBar i {
+  display: block;
+  height: 4px;
+  background: #3395b7;
+  border-radius: 3px;
+}
+.ceTiles {
+  display: flex;
+  gap: 7px;
+  flex-wrap: wrap;
+}
+.ceShard {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-width: 42px;
+  height: 32px;
+  border: 1px solid #72abc0;
+  border-radius: 3px;
+  background: #e5f3f7;
+  color: #175c78;
+  cursor: pointer;
+  padding: 0 7px;
+  font-size: 13px;
+}
+.ceShard--replica {
+  border-style: dashed;
+  background: transparent;
+  color: #397f9b;
+}
+.ceShard--unassigned {
+  border: 1px solid #c49a43;
+  background: #fff1cb;
+  color: #76520d;
+}
+.ceShard--relocating,
+.ceShard--initializing {
+  background: #eee7ff;
+  color: #645296;
+  border-color: #9d8abe;
+}
+.ceShard--related {
+  box-shadow: 0 0 0 2px #0078b0;
+}
+.ceShard[aria-pressed="true"] {
+  background: #006f9f;
+  color: white;
+}
+.ceShard:focus-visible,
+.ceLink:focus-visible {
+  outline: 3px solid #00a4df;
+  outline-offset: 3px;
+}
+.cePagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 12px 16px;
+}
+.ceLegend {
+  padding: 16px;
+  opacity: 0.75;
+  font-size: 12px;
+  border-top: 1px solid rgba(128, 128, 128, 0.25);
+  line-height: 1.6;
+}
+.ceEmpty,
+.ceLoading {
+  padding: 48px;
+  text-align: center;
+}
+.ceLoading p {
+  margin-top: 20px;
+}
+.ceDetails {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 16px;
+  margin: 24px 0;
+  font-size: 14px;
+}
+.ceDetails dt {
+  opacity: 0.75;
+}
+.ceDetails dd {
+  text-align: right;
+  overflow-wrap: anywhere;
+}
+.ceMetricGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0;
+}
+.ceMetricGrid strong {
+  display: block;
+  font-size: 24px;
+  margin-top: 12px;
+  font-variant-numeric: tabular-nums;
+  overflow-wrap: anywhere;
+}
+.ceStatusNote {
+  margin-left: 8px;
+}
+.ceRecoveryProgress progress {
+  display: block;
+  width: 100%;
+  margin-top: 8px;
+  accent-color: #007caf;
+}
+.ceFlyout .euiFlyoutBody h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin: 28px 0 16px;
+}
+.ceCopies button {
+  width: 100%;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  padding: 16px;
+  background: transparent;
+  color: inherit;
+  border: 1px solid rgba(128, 128, 128, 0.3);
+  cursor: pointer;
+  text-align: left;
+}
+.ceCopies button[aria-pressed="true"] {
+  border-left: 4px solid #007caf;
+}
+.ceCopies button:focus-visible {
+  outline: 3px solid #00a4df;
+  outline-offset: 2px;
+}
+.ceCopies b {
+  text-align: right;
+}
+.ceCopies small {
+  opacity: 0.75;
+}
+.ceExplanation {
+  margin-top: 20px;
+  line-height: 1.6;
+}
+.ceDecision {
+  padding: 16px 0;
+  border-bottom: 1px solid rgba(128, 128, 128, 0.25);
+}
+.ceDecision > .euiBadge {
+  margin-left: 12px;
+}
+.ceDecision p {
+  margin: 12px 0;
+}
+.ceExplanation pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 500px;
+  overflow: auto;
+  font-size: 12px;
+  padding: 16px;
+  background: rgba(128, 128, 128, 0.08);
+}
+.ceExplanation summary {
+  cursor: pointer;
+  margin: 20px 0;
+}
+.cePlacement h4 {
+  margin: 20px 0 12px;
+  font-weight: 600;
+}
+@media (max-width: 800px) {
+  .ceApp {
+    padding: 16px;
+  }
+  .ceApp .ceHeading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+  .ceFilters .euiFormControlLayout {
+    max-width: 100%;
+  }
+  .ceDetails {
+    grid-template-columns: 1fr 1fr;
+  }
+  .ceMetricGrid strong {
+    font-size: 20px;
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "target/types",
+    "skipLibCheck": true
+  },
+  "include": [
+    "common/**/*.ts",
+    "public/**/*.ts",
+    "public/**/*.tsx",
+    "server/**/*.ts",
+    "../../typings/**/*"
+  ],
+  "exclude": ["node_modules", "build", "target", "tests"]
+}

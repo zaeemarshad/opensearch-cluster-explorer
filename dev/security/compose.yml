@@ -1,0 +1,22 @@
+name: cluster-explorer-390-security
+services:
+  opensearch:
+    image: opensearchproject/opensearch:3.9.0
+    environment:
+      discovery.type: single-node
+      cluster.name: cluster-explorer-security
+      node.store.allow_mmap: "false"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+      OPENSEARCH_INITIAL_ADMIN_PASSWORD: ${SECURITY_ADMIN_PASSWORD:?Run dev/security/lab.sh start}
+    ports: ["127.0.0.1:19201:9200"]
+    volumes: ["security-data:/usr/share/opensearch/data"]
+  dashboards:
+    image: cluster-explorer-dashboards-security:3.9.0
+    build: { context: ../.., dockerfile: dev/security/Dockerfile }
+    ports: ["127.0.0.1:15603:5601"]
+    volumes:
+      [
+        "./dashboards.yml:/usr/share/opensearch-dashboards/config/opensearch_dashboards.yml:ro",
+      ]
+volumes:
+  security-data:
