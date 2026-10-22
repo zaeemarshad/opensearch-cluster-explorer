@@ -78,8 +78,13 @@ export function validateScope(scope: string): string {
     );
   return scope;
 }
-const stateFields =
-  "cluster_name,cluster_uuid,version,nodes.*.name,nodes.*.roles,nodes.*.attributes,metadata.indices.*.state,metadata.indices.*.settings.index.uuid,metadata.indices.*.settings.index.number_of_shards,metadata.indices.*.settings.index.number_of_replicas,metadata.indices.*.settings.index.hidden,routing_table.indices";
+// Only the routing fields that normalise.ts reads; unassigned_info.details can be large.
+const routingFields = (shard: string) =>
+  "state,primary,node,relocating_node,allocation_id,unassigned_info.reason"
+    .split(",")
+    .map((f) => `routing_table.indices.*.shards.${shard}.${f}`)
+    .join(",");
+const stateFields = `cluster_name,cluster_uuid,version,nodes.*.name,nodes.*.roles,nodes.*.attributes,metadata.indices.*.state,metadata.indices.*.settings.index.uuid,metadata.indices.*.settings.index.number_of_shards,metadata.indices.*.settings.index.number_of_replicas,metadata.indices.*.settings.index.hidden,${routingFields("*")}`;
 const bounded = (
   client: Transport,
   method: string,
@@ -310,7 +315,10 @@ async function currentCopy(client: Transport, selected: CopySelector) {
     client,
     "GET",
     `/_cluster/state/metadata,routing_table/${encodeURIComponent(selected.index)}`,
-    { filter_path: stateFields, cluster_manager_timeout: "5s" },
+    {
+      filter_path: `metadata.indices.*.settings.index.uuid,${routingFields(String(selected.shard))}`,
+      cluster_manager_timeout: "5s",
+    },
   );
   const copy = resolveCopy(state, selected);
   if (!copy)
@@ -344,8 +352,22 @@ export async function getShardDetails(
         `/${index}/_stats/docs,store,segments,translog,merge,refresh,indexing,search`,
         {
           level: "shards",
-          filter_path:
-            "_shards,indices.*.uuid,indices.*.shards.*.routing,indices.*.shards.*.docs,indices.*.shards.*.store,indices.*.shards.*.segments,indices.*.shards.*.translog,indices.*.shards.*.merges,indices.*.shards.*.refresh,indices.*.shards.*.indexing,indices.*.shards.*.search",
+          // OpenSearch has no shard selector for _stats; filter the response to one shard group.
+          filter_path: [
+            "_shards",
+            "indices.*.uuid",
+            ...[
+              "routing",
+              "docs",
+              "store",
+              "segments",
+              "translog",
+              "merges",
+              "refresh",
+              "indexing",
+              "search",
+            ].map((f) => `indices.*.shards.${selected.shard}.${f}`),
+          ].join(","),
         },
       ),
     ),
@@ -353,6 +375,8 @@ export async function getShardDetails(
       bounded(client, "GET", `/${index}/_recovery`, {
         active_only: true,
         detailed: false,
+        filter_path:
+          "*.shards.id,*.shards.primary,*.shards.stage,*.shards.type,*.shards.source.id,*.shards.source.name,*.shards.target.id,*.shards.target.name,*.shards.index.size.recovered_in_bytes,*.shards.index.size.total_in_bytes,*.shards.total_time_in_millis",
       }),
     ),
   ]);
@@ -384,7 +408,13 @@ export async function explainShard(client: Transport, selected: CopySelector) {
     client,
     "POST",
     "/_cluster/allocation/explain",
-    { include_yes_decisions: true, include_disk_info: true },
+    {
+      include_yes_decisions: true,
+      include_disk_info: true,
+      // Keep per-node disk usage; drop per-shard maps that grow with every shard in the cluster.
+      filter_path:
+        "-cluster_info.shard_sizes,-cluster_info.shard_data_set_sizes,-cluster_info.shard_paths,-cluster_info.reserved_sizes",
+    },
     {
       index: selected.index,
       shard: selected.shard,
