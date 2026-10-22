@@ -2,6 +2,20 @@
 
 Read-only cluster operations plugin for **OpenSearch Dashboards 3.9.0**. Allocation, Nodes and Indices views use live OpenSearch data. Select a shard copy for document/segment counts, recovery and allocation decisions.
 
+## Screenshots
+
+These screenshots come from the local 3.9.0 lab, which has two nodes and 3,024 shard copies.
+
+![Allocation view of a 500-primary index across two nodes](docs/images/allocation.png)
+
+| Nodes | Indices |
+| --- | --- |
+| ![Nodes view with disk, heap and CPU per node](docs/images/nodes.png) | ![Indices view with the first page of 25 indices](docs/images/indices.png) |
+
+| Shard details | Allocation explanation |
+| --- | --- |
+| ![Shard details flyout with document and segment counts](docs/images/shard-details.png) | ![Allocation explanation with per-node decider results](docs/images/allocation-explain.png) |
+
 ## Install
 
 Initial preview: plugin **0.1.0**, for **Dashboards 3.9.0 only**. Install from the matching Dashboards installation, then restart:

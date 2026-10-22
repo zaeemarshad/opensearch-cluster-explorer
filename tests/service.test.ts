@@ -187,6 +187,42 @@ test("explain specifies selected node and never uses mutation endpoints", async 
   assert.equal(request.params.method, "POST");
   assert.ok(calls.every((c) => !c.params.path.includes("reroute")));
 });
+test("shard details fetch only the selected shard group, not every copy in the index", async () => {
+  const { client, calls } = mockTransport();
+  await getShardDetails(client, { ...selected, shard: 0 });
+  const scoped = calls.filter(
+    (c) =>
+      c.params.path.includes("routing_table") ||
+      c.params.path.includes("/_stats/"),
+  );
+  assert.ok(scoped.length >= 3);
+  for (const c of scoped) {
+    const filter: string = c.params.querystring.filter_path;
+    assert.ok(!filter.includes("shards.*"), filter);
+    assert.ok(filter.includes("shards.0."), filter);
+  }
+  const recovery = calls.find((c) => c.params.path.endsWith("/_recovery"));
+  assert.ok(recovery.params.querystring.filter_path);
+});
+test("explain drops cluster-wide shard maps that grow with total shard count", async () => {
+  const { client, calls } = mockTransport();
+  await explainShard(client, selected);
+  const filter: string = calls.find(
+    (c) => c.params.path === "/_cluster/allocation/explain",
+  ).params.querystring.filter_path;
+  for (const map of ["shard_sizes", "shard_paths", "reserved_sizes"])
+    assert.ok(filter.split(",").includes(`-cluster_info.${map}`), map);
+  assert.ok(!filter.includes("-cluster_info.nodes"));
+});
+test("snapshot routing omits unassigned_info details", async () => {
+  const { client, calls } = mockTransport();
+  await getSnapshot(client, "*");
+  const filter: string = calls.find((c) =>
+    c.params.path.includes("routing_table"),
+  ).params.querystring.filter_path;
+  assert.ok(filter.includes("unassigned_info.reason"));
+  assert.ok(!/routing_table\.indices(,|$)/.test(filter));
+});
 test("index selectors reject wildcard, lists, cross-cluster and encoded URL injection", () => {
   for (const name of [
     "*",
